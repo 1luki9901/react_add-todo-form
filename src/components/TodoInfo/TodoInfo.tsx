@@ -1,31 +1,38 @@
+import classNames from 'classnames';
 import React from 'react';
 import { UserInfo } from '../UserInfo';
 
-export interface User {
+type TODO = {
+  id: number;
+  title: string;
+  completed: boolean;
+  userId: number;
+  user?: User;
+};
+
+type User = {
   id: number;
   name: string;
   username: string;
   email: string;
-}
+};
 
-export interface Todo {
-  id: number;
-  title: string;
-  userId: number;
-  completed: boolean;
-  user: User;
-}
+type Props = {
+  todo: TODO;
+  findUserById: (n: number) => User;
+};
 
-interface Props {
-  todo: Todo;
-}
+export const TodoInfo: React.FC<Props> = ({ todo, findUserById }) => {
+  return (
+    <article
+      data-id={todo.id}
+      className={classNames('TodoInfo', {
+        'TodoInfo--completed': todo.completed,
+      })}
+    >
+      <h2 className="TodoInfo__title">{todo.title}</h2>
 
-export const TodoInfo: React.FC<Props> = ({ todo }) => (
-  <article
-    data-id={todo.id}
-    className={`TodoInfo ${todo.completed ? 'TodoInfo--completed' : ''}`}
-  >
-    <h2 className="TodoInfo__title">{todo.title}</h2>
-    <UserInfo user={todo.user} />
-  </article>
-);
+      <UserInfo todo={todo} findUserById={findUserById} />
+    </article>
+  );
+};

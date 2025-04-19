@@ -5,7 +5,6 @@ import { Todo } from '../../types/Todo';
 type Props = {
   onSubmit: (todo: Todo) => void;
 };
-
 export const TodoForm: React.FC<Props> = ({ onSubmit }) => {
   const [title, setTitle] = useState('');
   const [hasTitleError, setTitleError] = useState(false);
@@ -31,16 +30,18 @@ export const TodoForm: React.FC<Props> = ({ onSubmit }) => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    setTitleError(!title);
+    const trimmedTitle = title.trim();
+
+    setTitleError(!trimmedTitle);
     setSelectError(!userId);
 
-    if (!title || !userId) {
+    if (!trimmedTitle || !userId) {
       return;
     }
 
     onSubmit({
       id: 0,
-      title,
+      title: trimmedTitle,
       completed: false,
       user: getUserById(userId),
       userId,
@@ -50,12 +51,13 @@ export const TodoForm: React.FC<Props> = ({ onSubmit }) => {
   };
 
   return (
-    <form action="/api/todos" method="POST" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <div className="field">
-        <label htmlFor="">
+        <label htmlFor="titleInput">
           Title:&nbsp;
           <input
             type="text"
+            id="titleInput"
             data-cy="titleInput"
             value={title}
             placeholder="Enter a title"
@@ -66,9 +68,10 @@ export const TodoForm: React.FC<Props> = ({ onSubmit }) => {
       </div>
 
       <div className="field">
-        <label htmlFor="">
+        <label htmlFor="userSelect">
           User:&nbsp;
           <select
+            id="userSelect"
             data-cy="userSelect"
             value={userId}
             onChange={handleUserChange}
